@@ -11,7 +11,7 @@ class Wrpc_warrior (Warrior):
         Warrior.__init__(self, host, port, workdir, protocol, intensity, username, ulist, password, plist, notuse, extensions, path, reexec, ipv6, domain, interactive, verbose, executed, exec)
 
         self.cmds = [
-            {"name": self.proto+"_rpcdump", "cmd": 'python $(which rpcdump.py) -p 135 ' + self.host + " || echo 'rpcdump.py is not in path!'", "shell": True, "chain": False},
+            {"name": self.proto+"_rpcdump", "cmd": 'impacket-rpcdump -p 135 ' + self.host + " || echo 'rpcdump.py is not in path!'", "shell": True, "chain": False},
             {"name": self.proto+"_nmap_"+self.port, "cmd": "nmap -n -sV --script=msrpc-enum -p "+self.port+" "+self.host, "shell": True, "chain": False}
         ]
 
