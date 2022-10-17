@@ -12,8 +12,8 @@ class Http_warrior (Warrior):
             {"name": self.proto + "_robots_"+self.port, "cmd": 'curl ' + self.proto_host_port + '/robots.txt -L -k --user-agent "Googlebot/2.1 (+http://www.google.com/bot.html)" --connect-timeout 30 --max-time 180', "shell": True, "chain": False},
             {"name": self.proto+"_nmap_"+self.port, "cmd": 'nmap -n -sV --script "(http* and not (dos or brute) and not http-xssed)" -p '+self.port+' '+self.host, "shell": True, "chain": False},
             {"name": self.proto+"_wafw00f_"+self.port, "cmd": 'wafw00f '+self.proto_host_port_path, "shell": False, "chain": False},
-            {"name": self.proto+"_fast_dirsearch_"+self.port, "cmd": "dirsearch -F -r -u " + self.proto_host_port_path + " -e " + self.extensions, "shell": False,"chain": False},
-            {"name": self.proto+"_dirhunt_"+self.port, "cmd": "dirhunt "+self.proto_host_port_path, "shell": False, "chain": False},
+            {"name": self.proto+"_fast_dirsearch_"+self.port, "cmd": "dirsearch -q -F -r -u " + self.proto_host_port_path + " -e " + self.extensions, "shell": False,"chain": False},
+            {"name": self.proto+"_dirhunt_"+self.port, "cmd": "dirhunt --progress-disabled "+self.proto_host_port_path, "shell": False, "chain": False},
             #{"name": "gobuster", "cmd": "gobuster -k -fw -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u "+self.proto_host_port_path+" -x html,txt,"+self.extensions, "shell": False, "chain": False},
             #{"name":"dirb","cmd": "dirb -S " + self.proto_host_port_path + " -X ." + self.extensions.replace(",",",."), "shell": False, "chain": False}, #Dirb needs the extension with a point. The flag '-f' in dirsearch makes it behave like dirb (force ext and "/")
             {"name": self.proto+"_cmsmap_"+self.port, "cmd": 'echo "y" | cmsmap -s '+self.proto_host_port_path, "shell": True, "chain": False},
@@ -31,8 +31,8 @@ class Http_warrior (Warrior):
             self.cmds.append({"name": "https_ssl_nmap_"+self.port, "cmd": 'nmap -sV --script "ssl-* and not brute and not dos" -p ' + self.port + " " +self.host, "shell": True, "chain": False})
 
         if self.intensity >= "2":
-            self.cmds.append({"name": self.proto + "_medium_dirsearch_"+self.port, "cmd": "dirsearch -f -F -r -u " + self.proto_host_port_path + " -e " + self.extensions + " -w /usr/share/dirb/wordlists/common.txt", "shell": False, "chain": False})
-            self.cmds.append({"name": self.proto + "_medium_dirsearch_raft_"+self.port, "cmd": "dirsearch -f -F -r -u " + self.proto_host_port_path + " -e " + self.extensions + ' -w ' + self.wordlists_path+'/raft-medium-words.txt', "shell": False, "chain": False})
+            self.cmds.append({"name": self.proto + "_medium_dirsearch_"+self.port, "cmd": "dirsearch -q -f -F -r -u " + self.proto_host_port_path + " -e " + self.extensions + " -w /usr/share/dirb/wordlists/common.txt", "shell": False, "chain": False})
+            self.cmds.append({"name": self.proto + "_medium_dirsearch_raft_"+self.port, "cmd": "dirsearch -q -f -F -r -u " + self.proto_host_port_path + " -e " + self.extensions + ' -w ' + self.wordlists_path+'/raft-medium-words.txt', "shell": False, "chain": False})
 
         if self.intensity == "3":
             self.extra_info = "You can use the variable 'username' to brute force a single username or the variable ulist to bruteforce a list of usernames. The default 'path' is '/'."
@@ -43,7 +43,7 @@ class Http_warrior (Warrior):
 
         dav_auth = "-auth "+self.username+":"+self.password+" " if (self.username and self.password) else ""
         self.demand_cmds=[
-            {"name": self.proto + "_slow_dirsearch_"+self.port, "cmd": "dirsearch -f -F -u " + self.proto_host_port + " -e " + self.extensions + " -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt", "shell": False, "chain": False},
+            {"name": self.proto + "_slow_dirsearch_"+self.port, "cmd": "dirsearch -q -f -F -u " + self.proto_host_port + " -e " + self.extensions + " -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt", "shell": False, "chain": False},
             {"name": self.proto + "_sqlmap_"+self.port, "cmd": "sqlmap -u "+self.proto_host_port_path+" --batch --crawl=3 --forms --random-agent --level 1 --risk 1 -f -a" , "shell": False, "chain": False},
             {"name": self.proto + "_davtestmove_"+self.port, "cmd": "davtest "+dav_auth+"-move -sendbd auto -url "+self.proto_host_port_path, "shell": False, "chain": False},
             {"name": self.proto + "_davtestnorm_"+self.port, "cmd": "davtest "+dav_auth+" -sendbd auto -url " + self.proto_host_port_path, "shell": False, "chain": False},
